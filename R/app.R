@@ -2,7 +2,7 @@
 
 library(shiny)
 library(DT)
-source("./R/scratch.R")
+source("scratch.R")
 
 weather_data <- getWeatherData()
 seattle <- getStationData(weather_data, stations = "KWASEATT2743")
