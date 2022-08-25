@@ -2,24 +2,25 @@
 
 library(shiny)
 library(DT)
+library(dplyr)
 source("scratch.R")
 
 weather_data <- getWeatherData()
-seattle <- getStationData(weather_data, stations = "KWASEATT2743")
-seattle_temps <- getVariableData(seattle, vars = "imperial.temp")
-daily_seattle_temps <- getDailyTemps(df = seattle_temps)
 
 ##### ---- Define UI ---- #####
 ui <- fluidPage(
   titlePanel("Daily Temperatures"),
   sidebarLayout(
     sidebarPanel(
+      selectInput(inputId = "station",
+                  label = h4("Station"),
+                  choices = unique(weather_data$stationID),
+                  selected = "KWASEATT2743"),
       dateRangeInput(inputId = "dates", 
-                     label = h3("Date range"),
-                     start = "2022-08-05",
-                     end = "2022-08-22"
-      )
-    ),
+                     label = h4("Date range"),
+                     start = min(weather_data$obsTimeUtc),
+                     end = max(weather_data$obsTimeUtc)
+      )),
     mainPanel(
       h2("Temperatures"),
       DTOutput("table_data")
@@ -30,12 +31,24 @@ ui <- fluidPage(
 ##### ---- Define server logic ---- #####
 server <- function(input, output, session) {
   
+  station_data <- reactive({
+    weather_data[weather_data$stationID == input$station,]
+  })
+  
+  temp_data <- reactive({
+    getVariableData(station_data(), vars = "imperial.temp")
+  })
+  
+  daily_min_max_temps <- reactive({
+    getDailyTemps(df = temp_data()) %>% 
+      filter(date >= input$dates[1] & 
+               date <= input$dates[2])
+  })
+  
   output$table_data <- renderDT(rownames = TRUE, 
                                 options = list(bPaginate = FALSE, 
                                                dom = 't'), 
-                                {daily_seattle_temps %>% 
-                                    filter(date >= input$dates[1] & 
-                                             date <= input$dates[2])
+                                {daily_min_max_temps()
                                 })
 }
 

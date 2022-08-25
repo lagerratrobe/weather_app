@@ -5,6 +5,15 @@ library(lubridate)
 # setup - Pull data in from Github and make it ready for consumption in Shiny
 getWeatherData <- function() {
   df <- readRDS(url("https://github.com/lagerratrobe/weather_station/raw/main/Data/station_obs.RDS"))
+  # Convert obsTimeLocal to proper Posix time object
+  df <- mutate(df,
+               obsTimeLocal = lubridate::parse_date_time(
+                 obsTimeLocal,
+                 "Ymd HMS",
+                 tz = "UTC",
+                 truncated = 0,
+                 quiet = FALSE,
+                 exact = FALSE) -> df)
   return(df)
 } 
 
@@ -26,16 +35,7 @@ getVariableData <- function(
                stationID,
                obsTimeLocal,
                all_of(vars))
-  # Convert obsTimeLocal to proper Posix time object
-  df <- mutate(df,
-               obsTimeLocal = lubridate::parse_date_time(
-                 obsTimeLocal,
-                 "Ymd HMS",
-                 tz = "UTC",
-                 truncated = 0,
-                 quiet = FALSE,
-                 exact = FALSE) -> df
-  )
+
   return(df)
 }
 
