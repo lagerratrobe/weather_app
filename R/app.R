@@ -22,7 +22,7 @@ ui <- fluidPage(
                      end = max(weather_data$obsTimeUtc)
       )),
     mainPanel(
-      h2("Temperatures"),
+      h2("Daily Highs and Lows"),
       DTOutput("table_data")
     )
   )
@@ -45,9 +45,11 @@ server <- function(input, output, session) {
                date <= input$dates[2])
   })
   
-  output$table_data <- renderDT(rownames = TRUE, 
+  output$table_data <- renderDT(rownames = FALSE,
+                                server = FALSE,
                                 options = list(bPaginate = FALSE, 
-                                               dom = 't'), 
+                                               dom = 't',
+                                               ordering=F), 
                                 {daily_min_max_temps()
                                 })
 }
