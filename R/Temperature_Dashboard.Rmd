@@ -1,0 +1,63 @@
+---
+title: "Temperature Dashboard"
+output: flexdashboard::flex_dashboard
+runtime: shiny
+---
+
+```{r global, include=FALSE}
+# load data in 'global' chunk so it can be shared by all users of the dashboard
+library(shiny)
+library(DT)
+library(dplyr)
+source("scratch.R")
+
+weather_data <- getWeatherData()
+```
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+Select Station ID and Date Range
+
+```{r}
+selectInput(inputId = "station",
+            label = h4("Station"),
+            choices = unique(weather_data$stationID),
+            selected = "KWASEATT2743"
+)
+dateRangeInput(inputId = "dates", 
+               label = h4("Date range"),
+               start = min(weather_data$obsTimeUtc),
+               end = max(weather_data$obsTimeUtc)
+)
+```
+
+Column
+-----------------------------------------------------------------------
+
+### Daily Min and Max Temperatures
+
+```{r}
+
+  station_data <- reactive({
+    weather_data[weather_data$stationID == input$station,]
+  })
+  
+  temp_data <- reactive({
+    getVariableData(station_data(), vars = "imperial.temp")
+  })
+  
+  daily_min_max_temps <- reactive({
+    getDailyTemps(df = temp_data()) %>% 
+      filter(date >= input$dates[1] & 
+               date <= input$dates[2])
+  })
+  
+renderDT(rownames = FALSE,
+         server = FALSE,
+         options = list(bPaginate = FALSE, 
+                        dom = 't',
+                        ordering=F), 
+         {daily_min_max_temps()
+         })
+```
