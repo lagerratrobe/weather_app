@@ -32,19 +32,19 @@ dateRangeInput(inputId = "dates",
 )
 
 # Reactive data
-  station_data <- reactive({
-    weather_data[weather_data$stationID == input$station,]
-  })
-  
-  temp_data <- reactive({
-    getVariableData(station_data(), vars = "imperial.temp")
-  })
-  
-  daily_min_max_temps <- reactive({
-    getDailyTemps(df = temp_data()) %>% 
-      filter(date >= input$dates[1] & 
-               date <= input$dates[2])
-  })
+station_data <- reactive({
+  weather_data[weather_data$stationID == input$station,]
+})
+
+temp_data <- reactive({
+  getVariableData(station_data(), vars = "imperial.temp")
+})
+
+daily_min_max_temps <- reactive({
+  getDailyTemps(df = temp_data()) %>% 
+    filter(date >= input$dates[1] & 
+             date <= input$dates[2])
+})
 ```
 
 Column
@@ -53,24 +53,24 @@ Column
 ### Last 8 Hours
 
 ```{r}
-  
+
 renderDT(rownames = FALSE,
          server = FALSE,
          options = list(bPaginate = FALSE, 
                         dom = 't',
                         ordering=F), 
-         { tail(n = 8, temp_data() %>% 
-                  arrange(obsTimeLocal) %>%
-                  mutate(obsTimeLocal = as.character(obsTimeLocal)
-                         )
-                )
+         { temp_data() %>% 
+             tail(n = 8) %>%
+             arrange(desc(obsTimeLocal)) %>%
+             mutate(obsTimeLocal = as.character(obsTimeLocal)
+             )
          })
 ```
 
 ### Daily Min and Max Temperatures
 
 ```{r}
-  
+
 renderDT(rownames = FALSE,
          server = FALSE,
          options = list(bPaginate = FALSE, 
