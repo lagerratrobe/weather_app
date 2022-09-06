@@ -107,3 +107,5 @@ dmypy.json
 *.Rproj
 *.xlsx
 rsconnect
+recording.log.post.*
+run1*
