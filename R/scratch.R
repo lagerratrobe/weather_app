@@ -35,7 +35,7 @@ getVariableData <- function(
                stationID,
                obsTimeLocal,
                all_of(vars))
-
+  
   return(df)
 }
 
@@ -52,21 +52,21 @@ getDailyTemps <- function(
   return(df)
 }
 ############### Main - GSD ###############################
-# weather_data <- getWeatherData()
-# 
-# Available stations
-# stations <- unique(weather_data$stationID)
-# 
-# Filter data to distinct StationIDs
-# many_stations <- getStationData(weather_data, stations)
-# seattle <- getStationData(weather_data, stations = "KWASEATT2743")
-# 
-# Get Temp data
-# seattle_temps <- getVariableData(seattle, vars = "imperial.temp")
-# tail(seattle_temps)
-# 
-# Daily Min and Max temps
-# daily_seattle_temps <- getDailyTemps(df = seattle_temps)
-# tail(daily_seattle_temps)
+#library(profvis)
 
+#profvis({
+  weather_data <- getWeatherData()
+  # stations <- unique(weather_data$stationID)
+  # # 
+  # # Filter data to distinct StationIDs
+  seattle <- getStationData(weather_data, stations = "KWASEATT2743")
+  # # 
+  # # Get Temp data
+  seattle_temps <- getVariableData(seattle, vars = "imperial.temp")
+  # # tail(seattle_temps)
+  # # 
+  # # Daily Min and Max temps
+  daily_seattle_temps <- getDailyTemps(df = seattle_temps)
+  # # tail(daily_seattle_temps)
+#})
 

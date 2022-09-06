@@ -59,7 +59,15 @@ renderDT(rownames = FALSE,
          options = list(bPaginate = FALSE, 
                         dom = 't',
                         ordering=F), 
-         { tail(n = 8, temp_data())
+         { tail(n = 8, temp_data() %>% 
+                  arrange(obsTimeLocal) %>%
+                  mutate(obsTimeLocal = paste0(lubridate::date(obsTimeLocal),
+                                               " [",
+                                               lubridate::hour(obsTimeLocal),
+                                               ":00]"
+                                               )
+                         )
+                )
          })
 ```
 
