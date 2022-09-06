@@ -30,15 +30,8 @@ dateRangeInput(inputId = "dates",
                start = min(weather_data$obsTimeUtc),
                end = max(weather_data$obsTimeUtc)
 )
-```
 
-Column
------------------------------------------------------------------------
-
-### Daily Min and Max Temperatures
-
-```{r}
-
+# Reactive data
   station_data <- reactive({
     weather_data[weather_data$stationID == input$station,]
   })
@@ -52,6 +45,27 @@ Column
       filter(date >= input$dates[1] & 
                date <= input$dates[2])
   })
+```
+
+Column
+-----------------------------------------------------------------------
+
+### Last 8 Hours
+
+```{r}
+  
+renderDT(rownames = FALSE,
+         server = FALSE,
+         options = list(bPaginate = FALSE, 
+                        dom = 't',
+                        ordering=F), 
+         { tail(n = 8, temp_data())
+         })
+```
+
+### Daily Min and Max Temperatures
+
+```{r}
   
 renderDT(rownames = FALSE,
          server = FALSE,
