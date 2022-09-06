@@ -74,4 +74,6 @@ renderDT(rownames = FALSE,
                         ordering=F), 
          {daily_min_max_temps()
          })
+# foo
 ```
+
