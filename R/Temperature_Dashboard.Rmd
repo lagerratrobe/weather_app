@@ -10,6 +10,7 @@ library(shiny)
 library(DT)
 library(dplyr)
 source("scratch.R")
+library(gt)
 
 weather_data <- getWeatherData()
 ```
@@ -17,7 +18,7 @@ weather_data <- getWeatherData()
 Column {.sidebar}
 -----------------------------------------------------------------------
 
-Select Station ID and Date Range
+Select Station ID and Date Range Today and Tomorrow
 
 ```{r}
 selectInput(inputId = "station",
