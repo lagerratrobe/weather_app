@@ -109,3 +109,4 @@ dmypy.json
 rsconnect
 recording.log.post.*
 run1*
+.Rhistory
