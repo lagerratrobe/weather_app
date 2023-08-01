@@ -10,7 +10,6 @@ library(shiny)
 library(DT)
 library(dplyr)
 source("scratch.R")
-library(gt)
 
 weather_data <- getWeatherData()
 ```
